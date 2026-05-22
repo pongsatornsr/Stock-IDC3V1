@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Stock IDC-3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Noto+Sans+Thai:wght@400;500;600;700&family=Space+Mono&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+:root {
+  /* 🎨 Color Palette */
+  --bg: #162238;                   /* สีน้ำเงินเข้มหม่น ท้องฟ้ากลางคืน */
+  --bg-card: #1D2D44;              /* สีกรมท่าลึกนุ่ม สำหรับเนื้อกล่อง */
+  --bg-input: #111A29;             /* สีน้ำเงินสลัวอินพุต */
+  --bg-nav: rgba(29, 45, 68, 0.9);
+  --border: rgba(221, 161, 94, 0.12);
+  
+  /* สีข้อความ */
+  --txt-main: #F4EAD4;             /* สีครีมสว่างนวลตา อ่านง่ายเด่นชัด */
+  --txt-sub: #DDA15E;              /* สีเหลืองมัสตาร์ดหม่นอบอุ่น */
+  --txt-muted: #748A9D;            /* สีฟ้าเทาหรู */
+  
+  /* แถบไล่เฉดสีฝีแปรง (Gradients) */
+  --grad-primary: linear-gradient(135deg, #F4A261, #E76F51); /* ส้มอิฐทานตะวัน */
+  --grad-starry: linear-gradient(135deg, #FFE494, #DDA15E);  /* ทองคำละมุน */
+  --grad-warn: linear-gradient(135deg, #E63946, #B11824);    /* แดงแต้มเฉด */
+  
+  /* 3D Soft Shadow มิตินูนมีน้ำมีนวล */
+  --shadow-3d-out: 6px 6px 14px #0E1624, -4px -4px 10px #22344E;
+  --shadow-3d-in: inset 4px 4px 10px #0E1624, inset -4px -4px 10px #22344E;
+  --r-card: 24px;
+  --r-input: 16px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--txt-main);
+  font-family: 'Noto Sans Thai', 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 410px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 95px;
+  overflow-x: hidden;
+}
+
+.mono { font-family: 'Space Mono', monospace; }
+.page { display: none; padding: 0 16px; animation: fadeUp .25s cubic-bezier(0.25, 1, 0.5, 1) }
+.page.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
+
+/* ================= Top Bar UI ================= */
+.topbar { padding: 24px 16px 14px; display: flex; align-items: center; justify-content: space-between; }
+.logo-wrap { display: flex; align-items: center; }
+.logo-title { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.5px; background: linear-gradient(135deg, #FFE494, #F4A261); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+.topbar-right { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 14px; border-radius: 100px; background: var(--bg-card); box-shadow: var(--shadow-3d-out); border: 1px solid rgba(255,255,255,0.03); transition: 0.2s; }
+.topbar-right:active { box-shadow: var(--shadow-3d-in); }
+.dot-badge { width: 8px; height: 8px; border-radius: 50%; background: var(--txt-muted); }
+
+/* ================= 3D Dashboard ================= */
+.section-eyebrow { font-size: 11px; font-weight: 700; color: var(--txt-sub); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; margin-top: 24px; padding-left: 4px; }
+.stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 20px; }
+
+.stat-card { 
+  background: var(--bg-card); 
+  border-radius: var(--r-card); 
+  padding: 18px 16px; 
+  position: relative; 
+  box-shadow: var(--shadow-3d-out);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+.stat-val { 
+  font-family: 'Plus Jakarta Sans', sans-serif; 
+  font-size: 40px; 
+  font-weight: 800; 
+  line-height: 1;
+  margin-bottom: 6px;
+  display: inline-block;
+  background: linear-gradient(135deg, #FFE494, #DDA15E);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.3)); 
+}
+.stat-card.alert-card .stat-val { background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.stat-lbl { font-size: 12px; color: var(--txt-muted); font-weight: 600; }
+
+/* ================= บล็อกคาร์ด 3 มิติ ================= */
+.card { 
+  background: var(--bg-card); 
+  border-radius: var(--r-card); 
+  padding: 18px; 
+  box-shadow: var(--shadow-3d-out);
+  border: 1px solid rgba(255,255,255,0.02);
+  margin-bottom: 16px;
+}
+.pill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; }
+.pill-lime { background: rgba(168, 218, 220, 0.1); color: #A8DADC; border: 1px solid rgba(168, 218, 220, 0.2); }
+.pill-warn { background: rgba(231, 111, 81, 0.12); color: #E76F51; border: 1px solid rgba(231, 111, 81, 0.25); }
+
+input, select { 
+  background: var(--bg-input); 
+  border: 1px solid rgba(0,0,0,0.2); 
+  box-shadow: var(--shadow-3d-in);
+  border-radius: var(--r-input); 
+  color: var(--txt-main); 
+  font-family: 'Noto Sans Thai', sans-serif; 
+  font-size: 14px; 
+  font-weight: 500;
+  padding: 14px; 
+  width: 100%; 
+  outline: none;
+  transition: all 0.2s;
+}
+input:focus, select:focus { border: 1px solid var(--txt-sub); }
+label { font-size: 12px; color: var(--txt-sub); font-weight: 700; display: block; margin-bottom: 6px; margin-top: 14px; padding-left: 2px; }
+
+.btn { 
+  width: 100%; 
+  padding: 16px; 
+  border-radius: var(--r-input); 
+  border: none; 
+  font-family: 'Noto Sans Thai','Plus Jakarta Sans',sans-serif; 
+  font-size: 15px; 
+  font-weight: 700;
+  cursor: pointer; 
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+  transition: all 0.15s ease;
+}
+.btn-lime { background: var(--grad-primary); color: #FFFFFF; }
+.btn-lime:active { transform: translateY(1px); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+.btn-ghost { background: var(--bg-card); color: var(--txt-main); border: 1px solid rgba(255,255,255,0.02); box-shadow: var(--shadow-3d-out); }
+.btn-ghost:active { box-shadow: var(--shadow-3d-in); }
+.btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 12px; width: auto; box-shadow: var(--shadow-3d-out); color: var(--txt-sub); }
+
+/* ================= Navigation UI ================= */
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 410px; background: var(--bg-nav); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-top: 1px solid rgba(255,255,255,0.04); box-shadow: 0 -6px 25px rgba(0,0,0,0.3); display: flex; z-index: 50; padding: 10px 6px 24px; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: transparent; color: var(--txt-muted); font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.15s; }
+.nav-item.active { color: #FFE494; }
+.nav-item i { font-size: 22px; transition: 0.15s; }
+.nav-item.active i { transform: translateY(-2px); filter: drop-shadow(0 0 6px rgba(255,228,148,0.4)); }
+
+/* ================= ลิสต์แถวประวัติ ================= */
+.log-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.log-item:last-child { border-bottom: none; }
+.log-icon { width: 42px; height: 42px; border-radius: 14px; background: var(--bg-input); box-shadow: var(--shadow-3d-in); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.log-name { font-size: 14px; font-weight: 700; color: var(--txt-main); }
+.log-meta { font-size: 11px; color: var(--txt-muted); margin-top: 1px; }
+.log-qty { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 800; color: #F4A261; text-align: right; }
+
+.admin-item { background: var(--bg-card); box-shadow: var(--shadow-3d-out); border-radius: var(--r-card); padding: 16px; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.02); }
+
+/* ================= กล้องคิวอาร์สแกน ================= */
+.scan-hero { margin: 20px 0; text-align: center; padding: 36px 20px; background: var(--bg-card); box-shadow: var(--shadow-3d-out); border-radius: var(--r-card); cursor: pointer; border: 2px dashed rgba(221, 161, 94, 0.2); }
+#camera-overlay { display: none; position: fixed; inset: 0; z-index: 100; background: #0A0F18; flex-direction: column; align-items: center; justify-content: center; }
+#camera-overlay.open { display: flex; }
+#cam-video { width: 100%; max-width: 410px; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+.cam-frame-wrap { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+.cam-frame { width: 250px; height: 250px; border-radius: 24px; position: relative; box-shadow: 0 0 0 4000px rgba(10, 15, 24, 0.75); }
+.cam-frame::before, .cam-frame::after { content: ''; position: absolute; width: 44px; height: 44px; border-color: #F4A261; border-style: solid; }
+.cam-frame::before { top: 0; left: 0; border-width: 4px 0 0 4px; border-radius: 16px 0 0 0; }
+.cam-frame::after { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-radius: 0 0 16px 0; }
+.cam-scan-line { position: absolute; top: 0; left: 6px; right: 6px; height: 3px; background: linear-gradient(90deg, transparent, #F4A261, transparent); animation: scanLine 2.5s ease-in-out infinite; }
+@keyframes scanLine { 0%, 100% { top: 12px; opacity: 0 } 50% { top: calc(100% - 12px); opacity: 1 } }
+.cam-close { position: absolute; top: 48px; right: 20px; z-index: 20; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: #fff; border-radius: 50%; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; border: none; }
+
+/* ================= ป๊อปอัป PIN ล็อกความปลอดภัย ================= */
+#pin-modal { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(10,15,24,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); align-items: flex-end; }
+#pin-modal.open { display: flex; }
+.pin-sheet { background: var(--bg); border-radius: 32px 32px 0 0; padding: 30px 20px 42px; width: 100%; max-width: 410px; margin: 0 auto; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); }
+.pin-dots { display: flex; gap: 14px; justify-content: center; margin-bottom: 24px; }
+.pin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--bg-input); box-shadow: var(--shadow-3d-in); }
+.pin-dot.filled { background: var(--grad-primary); box-shadow: none; }
+.pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 0 10px; }
+.pin-key { background: var(--bg-card); border-radius: 18px; padding: 18px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 800; cursor: pointer; text-align: center; box-shadow: var(--shadow-3d-out); border: 1px solid rgba(255,255,255,0.01); color: var(--txt-main); }
+.pin-key:active { box-shadow: var(--shadow-3d-in); }
+.pin-key.zero { grid-column: 2; }
+.pin-error { text-align: center; color: #E63946; font-size: 13px; font-weight: 600; margin-top: 12px; min-height: 18px; }
+
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #F4A261; color: #162238; border-radius: 100px; padding: 12px 24px; font-size: 13px; font-weight: 700; display: none; z-index: 300; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.toast.show { display: block; animation: fadeUp .2s ease; }
+.sample-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.qr-chip { padding: 8px 14px; border-radius: 100px; background: var(--bg-card); box-shadow: var(--shadow-3d-out); font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 600; color: var(--txt-sub); cursor: pointer; border: 1px solid rgba(255,255,255,0.01); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo-wrap">
+      <div class="logo-title">Stock IDC-3</div>
+    </div>
+    <div class="topbar-right" onclick="syncData()">
+      <div class="dot-badge" id="sync-dot"></div>
+      <span style="font-size:11px; font-weight:700;" class="mono" id="sheet-status-dot">ซิงค์...</span>
+    </div>
+  </div>
+
+  <div class="page active" id="page-home">
+    <div class="section-eyebrow">แผงควบคุมระบบคลัง</div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val" id="d-total">0</div>
+        <div class="stat-lbl">รายการคลังทั้งหมด</div>
+      </div>
+      <div class="stat-card alert-card" id="low-card-box">
+        <div class="stat-val" id="d-low">0</div>
+        <div class="stat-lbl">สต๊อกต่ำกว่ากำหนด</div>
+      </div>
+    </div>
+    
+    <div class="section-eyebrow">ประวัติเบิกล่าสุด</div>
+    <div class="card" id="d-recent-list"><div style="color:var(--txt-muted);font-size:12px;text-align:center;padding:12px">ไม่มีรายการคราบบบ</div></div>
+    
+    <div class="section-eyebrow">แจ้งเตือนสินค้าใกล้หมด</div>
+    <div class="card" id="d-low-list"><div style="color:var(--txt-muted);font-size:12px;text-align:center;padding:12px">สต๊อกปกติทั้งหมด ✓</div></div>
+  </div>
+
+  <div class="page" id="page-scan">
+    <div id="scan-start">
+      <div class="scan-hero" onclick="openCamera()">
+        <div><i class="ti ti-qrcode" style="font-size:54px; background: linear-gradient(135deg, #FFE494, #F4A261); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i></div>
+        <div style="font-weight:700; margin-top:10px; font-size:15px; color:var(--txt-sub)">แตะเพื่อเปิดกล้องสแกน QR</div>
+      </div>
+      <input id="manual-input" placeholder="ระบุรหัสพัสดุหรือชื่ออุปกรณ์...">
+      <button class="btn btn-ghost" onclick="doManualScan()" style="margin-top:12px; font-weight:700">ค้นหาข้อมูล</button>
+      
+      <div style="margin-top:20px">
+        <div class="section-eyebrow">รายการด่วน</div>
+        <div class="sample-chips" id="sample-chips"></div>
+      </div>
+    </div>
+    
+    <div id="scan-result" style="display:none">
+      <div class="card" style="margin-top:14px;">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px">
+          <div class="log-icon" id="r-icon" style="font-size:26px; width:52px; height:52px">📦</div>
+          <div>
+            <div style="font-size:20px; font-weight:800; color:var(--txt-main)" id="r-name">—</div>
+            <div class="mono" style="font-size:12px; color:var(--txt-muted)" id="r-id">—</div>
+          </div>
+        </div>
+        
+        <div style="display:flex; gap:8px; margin-bottom:14px">
+          <span class="pill pill-lime" id="r-cat">—</span>
+          <span class="pill" id="r-stock-pill">—</span>
+        </div>
+        
+        <div style="background:var(--bg-input); box-shadow:var(--shadow-3d-in); padding:14px; border-radius:16px; text-align:center; margin-bottom:14px">
+          <div style="font-size:12px; font-weight:700; color:var(--txt-muted)">ยอดคงเหลือในคลังปัจจุบัน</div>
+          <div style="font-family:'Plus Jakarta Sans'; font-size:42px; font-weight:800; color:#FFE494; line-height:1.2" id="r-stock-num">—</div>
+          <div style="font-size:13px; font-weight:700; color:var(--txt-muted)" id="r-unit">—</div>
+        </div>
+
+        <div style="border-top:1px solid rgba(255,255,255,0.05); padding-top:10px">
+          <label>ชื่อผู้เบิกของ</label>
+          <input id="r-user" placeholder="ระบุชื่อผู้ทำรายการเบิก">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+            <div><label>จำนวนที่เบิก</label><input id="r-qty" type="number" min="1" value="1"></div>
+            <div><label>หน่วยนับ</label><input id="r-unit2" readonly style="opacity:0.6; box-shadow:none"></div>
+          </div>
+          <label>หมายเหตุ / หน้างาน</label>
+          <input id="r-note" placeholder="เช่น ช่างซ่อมบำรุงเฟส 1">
+        </div>
+      </div>
+      <button class="btn btn-lime" onclick="confirmWithdraw()">ยืนยันตัดยอดคลังสินค้า</button>
+      <button class="btn btn-ghost" onclick="cancelScan()" style="margin-top:10px">ยกเลิก</button>
+    </div>
+  </div>
+
+  <div class="page" id="page-log">
+    <div class="section-eyebrow">ประวัติการเบิกพัสดุอุปกรณ์</div>
+    <input id="log-search" placeholder="พิมพ์เพื่อค้นหาประวัติ..." oninput="renderLog()">
+    <div class="card" id="log-list" style="margin-top:14px; padding:4px 16px"></div>
+  </div>
+
+  <div class="page" id="page-admin">
+    <div class="card" style="margin-top:14px">
+      <div style="font-family:'Plus Jakarta Sans'; font-weight:800; font-size:17px; background:var(--grad-starry); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:4px">+ ลงทะเบียนอุปกรณ์ชิ้นใหม่</div>
+      <label>ชื่อวัสดุอุปกรณ์</label><input id="a-name" placeholder="ระบุชื่อสิ่งของพัสดุ">
+      <label>หมวดหมู่สินค้า</label>
+      <select id="a-cat"><option>วัสดุสิ้นเปลือง</option><option>เครื่องมือช่าง</option><option>อุปกรณ์เซฟตี้</option><option>อื่นๆ</option></select>
+      
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+        <div><label>จำนวนเริ่มต้น</label><input id="a-stock" type="number" value="10"></div>
+        <div><label>หน่วยนับ</label><input id="a-unit" value="อัน"></div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+        <div><label>ขั้นต่ำแจ้งเตือน</label><input id="a-min" type="number" value="2"></div>
+        <div><label>สัญลักษณ์ Emoji</label><input id="a-icon" value="📦"></div>
+      </div>
+      <button class="btn btn-lime" onclick="addItem()" style="margin-top:18px">บันทึกลงคลังฐานข้อมูล</button>
+    </div>
+    
+    <div class="section-eyebrow">รายการอุปกรณ์ทั้งหมดในระบบคลัง</div>
+    <div id="admin-list"></div>
+  </div>
+
+  <div class="page" id="page-setup">
+    <div class="card" style="margin-top:14px">
+      <div style="font-family:'Plus Jakarta Sans'; font-weight:800; font-size:17px; background:var(--grad-starry); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:6px">ตั้งค่า Google Sheets API</div>
+      <label>Google Web App URL (ลงท้ายด้วย /exec)</label>
+      <input id="s-url" placeholder="วางลิงก์สคริปต์สเปรดชีตที่นี่" oninput="saveSettings()">
+      <button class="btn btn-lime" onclick="syncData()" style="margin-top:18px">ทดสอบซิงค์ฐานข้อมูล</button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button class="nav-item active" onclick="goPage('home',this)"><i class="ti ti-layout-dashboard"></i><span>แดชบอร์ด</span></button>
+  <button class="nav-item" onclick="goPage('scan',this)"><i class="ti ti-qrcode"></i><span>สแกน QR</span></button>
+  <button class="nav-item" onclick="goPage('log',this)"><i class="ti ti-list"></i><span>ประวัติ</span></button>
+  <button class="nav-item" onclick="goPage('admin',this)"><i class="ti ti-package"></i><span>จัดการคลัง</span></button>
+  <button class="nav-item" id="nav-setup" onclick="requestSetupAccess(this)"><i class="ti ti-settings"></i><span>ตั้งค่า</span></button>
+</div>
+
+<div id="camera-overlay">
+  <video id="cam-video" autoplay playsinline muted></video>
+  <canvas id="cam-canvas" style="display:none"></canvas>
+  <button class="cam-close" onclick="closeCamera()"><i class="ti ti-x"></i></button>
+  <div class="cam-frame-wrap">
+    <div class="cam-frame"><div class="cam-scan-line"></div></div>
+    <div id="cam-status" style="color:#F4A261; font-weight:700; font-size:13px; letter-spacing:1px">จัดแนว QR โค้ดให้อยู่ในกรอบคราบบบ</div>
+  </div>
+</div>
+
+<div id="pin-modal">
+  <div class="pin-sheet">
+    <div style="font-weight:700; margin-bottom:16px; text-align:center; color:var(--txt-main)">กรอกรหัสผ่านผู้ดูแลระบบ (PIN)</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div><div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div><div class="pin-dot" id="pd4"></div><div class="pin-dot" id="pd5"></div>
+    </div>
+    <div class="pin-pad">
+      <div class="pin-key" onclick="pinKey('1')">1</div><div class="pin-key" onclick="pinKey('2')">2</div><div class="pin-key" onclick="pinKey('3')">3</div>
+      <div class="pin-key" onclick="pinKey('4')">4</div><div class="pin-key" onclick="pinKey('5')">5</div><div class="pin-key" onclick="pinKey('6')">6</div>
+      <div class="pin-key" onclick="pinKey('7')">7</div><div class="pin-key" onclick="pinKey('8')">8</div><div class="pin-key" onclick="pinKey('9')">9</div>
+      <div class="pin-key zero" onclick="pinKey('0')">0</div><div class="pin-key" onclick="pinDel()">⌫</div>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+    <button class="btn btn-ghost" onclick="closePinModal()" style="margin-top:16px; font-weight:700">ยกเลิก</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script>
+const SECURE_PIN = "240739";
+
+let cfg = { url: localStorage.getItem('ss_cfg_url_v2') || "" };
+let items = JSON.parse(localStorage.getItem('ss2_items') || '[]');
+let logs = JSON.parse(localStorage.getItem('ss2_logs') || '[]');
+let curItem = null;
+let setupUnlocked = false;
+
+function saveLocal() {
+  localStorage.setItem('ss2_items', JSON.stringify(items));
+  localStorage.setItem('ss2_logs', JSON.stringify(logs));
+}
+function uid() { return 'IDC3-' + Math.random().toString(36).substr(2, 5).toUpperCase(); }
+
+let isSyncing = false;
+async function syncData() {
+  if (!cfg.url) {
+    document.getElementById('sheet-status-dot').textContent = 'รอตั้งค่า API';
+    document.getElementById('sheet-status-dot').style.color = 'var(--txt-muted)';
+    document.getElementById('sync-dot').style.backgroundColor = 'var(--txt-muted)';
+    return;
+  }
+  if (isSyncing) return;
+  isSyncing = true;
+  document.getElementById('sheet-status-dot').textContent = 'กำลังซิงค์...';
+  
+  try {
+    const res = await fetch(cfg.url, { method: 'GET', mode: 'cors' });
+    const data = await res.json();
+    if (data && data.items) {
+      items = data.items;
+      logs = data.logs || [];
+      saveLocal();
+      updateDash(); renderAdmin(); renderLog(); renderChips();
+      document.getElementById('sheet-status-dot').textContent = 'ข้อมูลตรงกัน ✓';
+      document.getElementById('sheet-status-dot').style.color = '#DDA15E';
+      document.getElementById('sync-dot').style.backgroundColor = '#DDA15E';
+    }
+  } catch(e) {
+    console.error(e);
+    document.getElementById('sheet-status-dot').textContent = 'โหมดออฟไลน์';
+    document.getElementById('sheet-status-dot').style.color = '#E76F51';
+    document.getElementById('sync-dot').style.backgroundColor = '#E76F51';
+    updateDash(); renderAdmin(); renderLog(); renderChips();
+  }
+  isSyncing = false;
+}
+
+function goPage(p, el) {
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(el) el.classList.add('active');
+  if(p==='home') updateDash();
+  if(p==='log') renderLog();
+  if(p==='admin') renderAdmin();
+  if(p==='scan') renderChips();
+  if(p==='setup') document.getElementById('s-url').value = cfg.url;
+}
+
+function requestSetupAccess(el) {
+  if(setupUnlocked) { goPage('setup',el); return; }
+  openPinModal(el);
+}
+
+let pinBuffer=''; let pinTargetEl=null;
+function openPinModal(navEl){ pinTargetEl=navEl; pinBuffer=''; updatePinDots(); document.getElementById('pin-error').textContent=''; document.getElementById('pin-modal').classList.add('open'); }
+function closePinModal(){ document.getElementById('pin-modal').classList.remove('open'); }
+function updatePinDots(){ for(let i=0;i<6;i++){ document.getElementById('pd'+i).classList.toggle('filled',i<pinBuffer.length); } }
+function pinKey(k){ if(pinBuffer.length>=6)return; pinBuffer+=k; updatePinDots(); if(pinBuffer.length===6) setTimeout(checkPin,120); }
+function pinDel(){ pinBuffer=pinBuffer.slice(0,-1); updatePinDots(); }
+function checkPin(){
+  if(pinBuffer===SECURE_PIN){
+    setupUnlocked=true; closePinModal();
+    goPage('setup',pinTargetEl||document.getElementById('nav-setup'));
+    toast('✓ ปลดล็อกแอดมินสำเร็จ');
+  } else {
+    document.getElementById('pin-error').textContent='❌ รหัส PIN ไม่ถูกต้องครับ'; pinBuffer=''; updatePinDots();
+  }
+}
+
+let camStream=null; let camAnimFrame=null; let lastScan=0;
+async function openCamera(){
+  document.getElementById('camera-overlay').classList.add('open');
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({ video:{facingMode:'environment'} });
+    const video=document.getElementById('cam-video');
+    video.srcObject=camStream; await video.play();
+    scanLoop();
+  }catch(err){
+    closeCamera(); toast('เปิดกล้องไม่ได้ พิมพ์รหัสค้นหาแทนคราบบบ');
+  }
+}
+function scanLoop(){
+  const video=document.getElementById('cam-video');
+  const canvas=document.getElementById('cam-canvas');
+  const ctx=canvas.getContext('2d');
+  function tick(){
+    if(!camStream)return;
+    if(video.readyState===video.HAVE_ENOUGH_DATA){
+      canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+      ctx.drawImage(video,0,0,canvas.width,canvas.height);
+      const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+      const now=Date.now();
+      if(now-lastScan>300){
+        lastScan=now;
+        const code=jsQR(imageData.data,imageData.width,imageData.height);
+        if(code && code.data){ closeCamera(); scanItem(code.data.trim()); return; }
+      }
+    }
+    camAnimFrame=requestAnimationFrame(tick);
+  }
+  camAnimFrame=requestAnimationFrame(tick);
+}
+function closeCamera(){ document.getElementById('camera-overlay').classList.remove('open'); if(camAnimFrame)cancelAnimationFrame(camAnimFrame); if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null} }
+
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+async function addItem(){
+  if(!cfg.url) return;
+  const n=document.getElementById('a-name').value.trim(); if(!n) return;
+  const newItem = {id:uid(),name:n,cat:document.getElementById('a-cat').value,stock:parseInt(document.getElementById('a-stock').value)||0,unit:document.getElementById('a-unit').value||'ชิ้น',min:parseInt(document.getElementById('a-min').value)||2,icon:document.getElementById('a-icon').value||'📦'};
+  
+  items.push(newItem); saveLocal(); renderAdmin(); document.getElementById('a-name').value='';
+  toast('✓ บันทึกข้อมูลลงฐานข้อมูลเครื่องชั่วคราว');
+  try {
+    await fetch(cfg.url, { method: 'POST', mode: 'cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action: 'add_items', items: [newItem] }) });
+    syncData();
+  } catch(e){ toast('บันทึกออฟไลน์ในเครื่องเรียบร้อย'); }
+}
+
+function renderAdmin(){
+  const el=document.getElementById('admin-list');
+  if(!items.length){el.innerHTML='<div style="color:var(--txt-muted);text-align:center;padding:16px">คลังยังไม่มีข้อมูลอุปกรณ์</div>';return}
+  el.innerHTML=items.map((it)=>`
+    <div class="admin-item">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="log-icon">${it.icon}</div>
+        <div style="flex:1">
+          <div style="font-weight:700; color:var(--txt-main)">${it.name}</div>
+          <div style="font-size:12px;color:var(--txt-sub); font-weight:600">คงเหลือ ${it.stock} ${it.unit} ${it.stock<=it.min?'<span style="color:#E76F51">(สต๊อกต่ำ)</span>':''}</div>
+          <div class="mono" style="font-size:10px;color:var(--txt-muted)">${it.id}</div>
+        </div>
+        <button onclick="delItem('${it.id}')" style="background:none;border:none;color:var(--txt-muted);cursor:pointer; font-size:18px"><i class="ti ti-trash"></i></button>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;background:var(--bg-input);padding:10px;border-radius:16px;margin-top:10px;box-shadow:var(--shadow-3d-in)">
+        <div id="qr-${it.id}" style="background:#fff;padding:4px;border-radius:6px;width:72px;height:72px"></div>
+        <button onclick="printQR('${it.id}','${it.name}')" class="btn btn-ghost btn-sm" style="font-weight:700">🖨 พิมพ์ QR Code</button>
+      </div>
+    </div>`).join('');
+
+  items.forEach(it=>{
+    const qrEl=document.getElementById('qr-'+it.id);
+    if(qrEl && !qrEl.dataset.done){
+      new QRCode(qrEl,{text:it.id,width:64,height:64}); qrEl.dataset.done='1';
+    }
+  });
+}
+
+function printQR(id, name){
+  const el=document.getElementById('qr-'+id); if(!el) return;
+  const img=el.querySelector('img') || el.querySelector('canvas'); if(!img) return;
+  const src = img.src || img.toDataURL();
+  const w=window.open('','_blank');
+  w.document.write(`<html><body style="font-family:sans-serif; text-align:center; padding-top:30px;"><img src="${src}" width="140"><br><b style="font-size:16px;">${name}</b><br><code style="font-size:12px; color:#555;">${id}</code><script>window.onload=function(){window.print();setTimeout(()=>window.close(),400);}<\/script></body></html>`);
+  w.document.close();
+}
+
+async function delItem(id){
+  if(!confirm('คุณแน่ใจว่าต้องการลบอุปกรณ์ชิ้นนี้ออกจากคลัง?')) return;
+  items = items.filter(x => x.id !== id); saveLocal(); renderAdmin();
+  if(cfg.url) { try { await fetch(cfg.url, { method: 'POST', mode: 'cors', body: JSON.stringify({ action: 'delete_item', id: id }) }); syncData(); } catch(e){} }
+}
+
+function renderChips(){
+  const el=document.getElementById('sample-chips');
+  el.innerHTML=items.slice(0,6).map(it=>`<div class="qr-chip" onclick="scanItem('${it.id}')">${it.icon} ${it.name}</div>`).join('');
+}
+
+function doManualScan(){ const v=document.getElementById('manual-input').value.trim(); if(v)scanItem(v); }
+
+function scanItem(code){
+  const it=items.find(x=>x.id===code || x.name===code); if(!it){toast('❌ ไม่พบพัสดุพิกัดหรือรหัสนี้ครับ');return}
+  curItem=it;
+  document.getElementById('r-icon').textContent=it.icon; document.getElementById('r-name').textContent=it.name; document.getElementById('r-id').textContent=it.id; document.getElementById('r-cat').textContent=it.cat;
+  document.getElementById('r-stock-pill').textContent=it.stock<=it.min?'สต๊อกต่ำกว่าเกณฑ์':'สถานะปกติ';
+  document.getElementById('r-stock-pill').className = it.stock<=it.min?'pill pill-warn':'pill pill-lime';
+  document.getElementById('r-stock-num').textContent=it.stock; document.getElementById('r-unit').textContent=it.unit; document.getElementById('r-unit2').value=it.unit;
+  document.getElementById('scan-start').style.display='none'; document.getElementById('scan-result').style.display='block';
+}
+
+function cancelScan(){ document.getElementById('scan-start').style.display='block'; document.getElementById('scan-result').style.display='none'; curItem=null; document.getElementById('manual-input').value=''; }
+
+async function confirmWithdraw(){
+  const user=document.getElementById('r-user').value.trim(); const qty=parseInt(document.getElementById('r-qty').value)||0;
+  if(!user) { toast('❌ โปรดระบุชื่อผู้เบิกของก่อนคราบบบ'); return; }
+  if(qty<1 || qty>curItem.stock) { toast('⚠️ จำนวนที่เบิกไม่ถูกต้องหรือเกินสต๊อก'); return; }
+  
+  const entry={ action: 'withdraw', timestamp: new Date().toLocaleString('th-TH'), qr_id: curItem.id, item_name: curItem.name, category: curItem.cat, quantity: qty, unit: curItem.unit, employee: user, note: document.getElementById('r-note').value||'' };
+  
+  curItem.stock-=qty; logs.unshift(entry); saveLocal(); cancelScan(); toast('✓ ตัดยอดสต๊อกคลังสำเร็จ!');
+  if(cfg.url){
+    try{ await fetch(cfg.url, { method: 'POST', mode: 'cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(entry) }); syncData(); }catch(e){}
+  }
+}
+
+function renderLog(){
+  const q = (document.getElementById('log-search').value || '').toLowerCase();
+  const el = document.getElementById('log-list');
+  
+  // เพิ่มการตรวจสอบ (l.item_name || '') เพื่อป้องกันกรณีเจอบรรทัดว่างเปล่าใน Sheets
+  const fl = logs.filter(l => {
+    const itemName = (l.item_name || '').toString().toLowerCase();
+    const employeeName = (l.employee || '').toString().toLowerCase();
+    return itemName.includes(q) || employeeName.includes(q);
+  });
+  
+  if(!fl.length){ el.innerHTML='<div style="color:var(--txt-muted);text-align:center;padding:16px">ไม่พบข้อมูลประวัติ</div>'; return; }
+  el.innerHTML=fl.map(l=>`
+    <div class="log-item">
+      <div style="flex:1; min-width:0;">
+        <div class="log-name">${l.item_name || 'ไม่ระบุชื่อพัสดุ'}</div>
+        <div class="log-meta"><b>${l.employee || 'ไม่ระบุชื่อผู้เบิก'}</b> · <small>${l.timestamp || ''}</small></div>
+        ${l.note? `<div style="font-size:11px; color:#F4A261; margin-top:2px;">หมายเหตุ: ${l.note}</div>`:''}
+      </div>
+      <div class="log-qty">-${l.quantity || 0} <span style="font-size:11px; color:var(--txt-muted); font-weight:500;">${l.unit||''}</span></div>
+    </div>`).join('');
+}
+function saveSettings(){
+  const val = document.getElementById('s-url').value.trim();
+  cfg.url = val;
+  localStorage.setItem('ss_cfg_url_v2', val);
+}
+
+function updateDash() {
+  document.getElementById('d-total').textContent = items.length;
+  const lowItems = items.filter(x=>x.stock<=x.min);
+  document.getElementById('d-low').textContent = lowItems.length;
+  
+  if(lowItems.length > 0) {
+    document.getElementById('low-card-box').style.border = '1px solid rgba(231,111,81,0.3)';
+  } else {
+    document.getElementById('low-card-box').style.border = '1px solid rgba(255,255,255,0.02)';
+  }
+  
+  const re=document.getElementById('d-recent-list');
+  if(logs.length){
+    re.innerHTML=logs.slice(0,4).map(l=>`
+      <div class="log-item">
+        <div style="flex:1; min-width:0;">
+          <div class="log-name">${l.item_name}</div>
+          <div class="log-meta">ผู้เบิก: ${l.employee}</div>
+        </div>
+        <div class="log-qty">-${l.quantity}</div>
+      </div>`).join('');
+  }else{
+    re.innerHTML='<div style="color:var(--txt-muted);text-align:center;padding:12px">ยังไม่มีประวัติทำรายการเบิกของ</div>';
+  }
+  
+  const loe=document.getElementById('d-low-list');
+  if(lowItems.length){
+    loe.innerHTML=lowItems.map(it=>`
+      <div class="log-item">
+        <div class="log-icon">${it.icon}</div>
+        <div style="flex:1">
+          <div class="log-name">${it.name}</div>
+          <div class="log-meta">คงเหลือวิกฤต: <span style="color:#E76F51; font-weight:700">${it.stock}</span> ${it.unit}</div>
+        </div>
+      </div>`).join('');
+  }else{
+    loe.innerHTML='<div style="color:var(--txt-main); font-weight:600; text-align:center; padding:12px">✓ สต๊อกวัสดุทุกรายการปกติดีทั้งหมด</div>';
+  }
+}
+
+// ======= RUN INIT =======
+syncData();
+</script>
+</body>
+</html>
